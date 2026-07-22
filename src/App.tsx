@@ -33,7 +33,7 @@ export default function App() {
   const cameraRef = useRef<CameraState>({ x: 100, y: 100, zoom: 0.5 });
   const [rasterScale, setRasterScale] = useState(0.5);
 
-  const isDraggingRef = useRef(false);
+  const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
 
   const activeContextRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -164,7 +164,7 @@ export default function App() {
   // Drag Interaction Parameters
   const handleMouseDown = (e: MouseEvent) => {
     if (e.button !== 0) return;
-    isDraggingRef.current = true;
+    setIsDragging(true);
     dragStartRef.current = {
       x: e.clientX - cameraRef.current.x,
       y: e.clientY - cameraRef.current.y,
@@ -172,14 +172,14 @@ export default function App() {
   };
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (!isDraggingRef.current) return;
+    if (!isDragging) return;
     cameraRef.current.x = e.clientX - dragStartRef.current.x;
     cameraRef.current.y = e.clientY - dragStartRef.current.y;
     drawWorkspace();
   };
 
   const handleMouseUpOrLeave = () => {
-    isDraggingRef.current = false;
+    setIsDragging(false);
   };
 
   return (
@@ -196,7 +196,7 @@ export default function App() {
         ref={setContainer}
         className={styles.Main}
         style={{
-          cursor: isDraggingRef.current ? "grabbing" : "grab",
+          cursor: isDragging ? "grabbing" : "grab",
         }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
